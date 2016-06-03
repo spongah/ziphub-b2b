@@ -1,0 +1,100 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : May 12, 2016, 9:40:10 PM
+    Author     : yytdevelopment
+*/
+
+.trial-lists{
+
+    background-color: #fff;
+
+}
+.trial-lists h3 > span,.featured p{
+    color:#8ac323;
+    font-size: 14px;
+}
+.trial-lists h3,.featured h3{
+    color:#233a71;
+
+}
+.view-btn{
+    background-color: #8ac323;
+    color: #fff;
+}
+.save-btn{
+    background-color: #445786;
+    color: #fff;
+}
+.trial-lists .save-btn{  
+    width: 15%;
+    margin-right: 30px;   
+}
+.trial-lists .view-btn{
+    width: 15%;
+}
+
+.featured .save-btn{
+    width: 40%;
+    margin-right: 15px;
+    width: 30%;
+}
+.featured .view-btn{
+    width: 30% ;
+}
+.featured p{
+    margin-bottom: 0 !important;
+    padding-top: 9px;
+}
+#banner-ad{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding-left: 0px!important;
+    padding-right: 0px!important;
+}
+#banner-ad > div  > img{
+    width: 100%
+}
+.trial-middle{
+    background-color: #f7f7f7;
+}
+.featured .col-sm-12{
+    background-color: #fff;
+}
+.trial-middle .thumbnail{
+    padding:0px;
+    border:none;
+}
+.trial-thumb > img{
+    width: 100%;
+    height: 200px;
+    padding:0px;
+    border-bottom: 5px solid #8ac323;
+    border-radius: 5px;
+}
+.tittle{
+    background-color: #8ac323;
+    color: #fff;
+    padding: 10px;
+    width: 100px;
+    position: absolute;
+    top:30px;
+}
+.trial-thumb ul{
+     left: 10%;
+    position: absolute;
+    top: 45%;
+    
+}
+.trial-thumb ul > li >span{
+    height: 5px;
+    width: 5px;
+    background-color: #8ac323;
+}
+.trial-thumb ul > li{
+    font-size: 18px;
+    color:#fff;
+}

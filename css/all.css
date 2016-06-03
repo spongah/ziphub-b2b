@@ -1,0 +1,316 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : May 13, 2016, 11:37:10 PM
+    Author     : yytdevelopment
+*/
+
+@font-face{
+    font-family: helveticaneue-med;
+    src:url('../fonts/HelveticaNeueMed.ttf')
+}
+@font-face{
+    font-family: helveticaneue-bold;
+    src:url('../fonts/Helvetica-Bold.ttf')
+}
+
+@font-face{
+    font-family: helveticaneue-medium;
+    src:url('../fonts/HelveticaNeueLTStd-Md.otf')
+}
+@font-face{
+    font-family: helveticaneue-lt;
+    src:url('../fonts/HelveticaNeueLt.ttf')
+}
+@font-face{
+    font-family: helveticaneue-light;
+    src:url('../fonts/HelveticaNeue Light.ttf')
+}
+@font-face{
+    font-family: HelveticaNeueLTStd-Roman;
+    src:url('../fonts/HelveticaNeueLTStd-Roman.otf')
+}
+@font-face{
+    font-family: HelveticaNeueLTStd-BdCn;
+    src:url('../fonts/HelveticaNeueLTStd-BdCn.otf')
+}
+@font-face{
+    font-family: HelveticaNeue;
+    src:url('../fonts/HelveticaNeueLTStd-Cn.otf')
+}
+@font-face{
+    font-family: SourceSansSemibold;
+    src:url('../fonts/SourceSansPro-Semibold.otf')
+}
+@font-face{
+    font-family: SourceSanslight;
+    src:url('../fonts/SourceSansPro-Light.otf')
+}
+@font-face{
+    font-family: SourceSansRegular;
+    src:url('../fonts/SourceSansPro-Regular.otf')
+}
+.middle-body p{
+    font-family: HelveticaNeueLTStd-Roman;
+}
+#comig-soon,#sign-up{
+    font-family: helveticaneue-bold !important;
+}
+.admin-head >h1{
+    font-family: SourceSanslight;
+}
+.admin-head > h1 >span{
+    font-family: SourceSansSemibold;
+    font-size: 38px;
+    padding-right: 7px;
+}
+.admin-form h3{
+    font-family: SourceSanslight;
+    font-size: 38px;
+    margin-top: 50px;
+}
+.admin-form h3 span,#consumer-info,.referred-checkbox > p{
+    font-family: SourceSansSemibold;
+}
+.form-control::-moz-placeholder,#consumer-info-two,#charity-info,#agree,.admin-form .btn,.menu .pull-right{
+    font-family: SourceSansRegular;
+}
+.text-section h1{
+    font-family: 'helveticaneue-bold';
+}
+.trial-lists p,.recomended-gifts > p,.recomended-gifts h4,
+#blue-text,.travel-lists h4 > span,.travel-lists p,
+.travel-middle .featured h3,.thumbnail.food-thumb > h4,
+.restaurant-lists h3,.restaurant-lists p,
+.featured > div h3,#travel-header,.text-section p,.trial-lists h4{
+    font-family: HelveticaNeue;
+}
+#popular-trials .featured p,.travel-lists h4{
+    font-family: helveticaneue-medium;
+}
+.seasonal-thumb > .caption > p,.group-middle h2,.featured p{
+    font-family: helveticaneue-medium;
+    font-weight:400 !important; 
+}
+.middle-body .col-sm-2 > p {
+    font-family: HelveticaNeueLTStd-Roman;
+}
+.menu .nav-pills li > a{
+
+    font-size: 16px;
+}
+.login-btn,.green-btn,.menu .nav-pills li > a,.green{  
+    font-family: helveticaneue-med;
+    
+}
+.login-btn,.login-btn:hover,.login-btn:focus {
+    color:#fff;
+}
+.green-btn ,.green-btn:focus,.green-btn:hover{
+    color:rgb(120, 186, 1);
+}
+#wheel h1,#more-flash > .container > h2,#capt{
+    font-family: HelveticaNeueLTStd-BdCn;
+    
+    font-weight: 400 !important;
+   
+}
+#wheel h1,#capt{
+    
+    color:#294894;
+   
+   
+}
+
+#wheel .text-center > img{
+    margin-bottom: 50px;
+}
+.middle-body h2{
+    font-family: HelveticaNeueLTStd-BdCn;  
+        
+}
+.middle-body hr{
+    border-width: 2px;
+}
+.middle-body h2 span {
+    border-bottom: 2px solid #92c732;
+    padding-bottom: 19px;
+}
+#more-flash .text-center > img{
+    width: 27%;
+}
+.seasonal-thumb > .caption :first-child{
+  margin-left: 5px;
+}
+.seasonal-thumb .caption .col-sm-7 > h3{
+    text-decoration: line-through;
+}
+.seasonal-thumb .caption .col-sm-7 > h3> span{
+    text-decoration: none !important;
+}
+.btn,#new-realease h5,#new-realease span,#new-realease p{
+    font-family: helveticaneue-medium;
+}
+.footer .container > .col-sm-3 h5 {
+    color: #8ac323;
+    font-size: 16px;
+    font-family: helveticaneue-med;
+    text-transform: uppercase;
+}
+.list-unstyled a {
+    color: #fff;
+    text-decoration: none;
+    text-transform: capitalize;
+     font-family: HelveticaNeueLTStd-Roman;
+}
+.list-unstyled a:hover,.list-unstyled a:hover:focus{
+    color:#78ba01;
+}
+.bottom-form p,.featured > div>  h2{
+    font-family: helveticaneue-medium;
+}
+.web-middle h1,.recomended-sales h1,
+.trial-middle h1,.dest-travel h1,
+.music-head h1,#game-header{
+    padding-top: 70px;
+    color: #595959;
+    font-family: HelveticaNeue;
+   
+}
+.web-middle h2,.trial-middle h2,.travel-middle h2,
+.travel-middle .featured p,.travel-middle .featured h6,
+.travel-middle .featured h3 > span,#foods-res > h2,.type,
+.featured-food > h2,.music-middle h2,.travel-middle h3{
+    font-family: helveticaneue-medium;
+    margin-bottom: -10px;
+}
+.trial-middle h3{
+    font-family: helveticaneue-medium;
+    font-size: 20px;
+}
+.web-middle .text-center > img{
+  /*padding-bottom: 35px;
+    width:29%;*/
+    
+}
+.seasonal-thumb > p, .seasonal-thumb h4{
+    padding-left: 15px;
+     font-family: helveticaneue-med;
+}
+.seasonal-thumb h2,.recomended-gifts h2{
+    color:#000000;
+     font-family: helveticaneue-med;
+     margin-bottom: 1px;
+}
+.seasonal-thumb h3{
+    padding-top: 7px;
+    margin-bottom: 0px;
+}
+.save-btn > img,.view-btn >img{
+    padding-bottom: 5px;
+    padding-right: 5px;
+}
+.home-container .seasonal-thumb {
+    height: 480px;
+}
+#new-realease > img{
+    width: 100%;
+}
+#latest-realsease > img {
+    padding-top: 14px;
+    width: 115%;
+    margin-bottom: 150px;
+}
+#featured-news {
+    margin-top: 50px;
+}
+#trending-news{
+      margin-top: 50px;
+}
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.menu .btn {
+    border-radius: 20px;
+    margin-left: 15px;
+    width: 100px;
+}
+.logo-text, .menu a, .menu button {
+    font-size: 16px;
+}
+.green-btn, .form-inline {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid rgb(120, 186, 1);
+    color: rgb(120, 186, 1);
+}
+#search-form{
+     background-color: rgb(120, 186, 1);
+    bottom: -25px;
+    color: #fff;
+    font-size: 15px;
+    left: 25%;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+#search-form .form-group{
+    margin-bottom: 4px !important;
+}
+#menu-icon{
+  margin: -10px 0px -16px -63px;
+  height: 64px;  
+}
+#search-form .col-sm-1{
+width:2%;
+}
+#search-form .col-sm-3{
+    width: 31%;
+}
+#search-icon{
+    margin-right: -26px;
+}
+.watch-vid-img{
+	margin-top:-2px; margin-left:2px;
+}

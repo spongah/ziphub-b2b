@@ -1,0 +1,130 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : May 12, 2016, 4:44:56 PM
+    Author     : yytdevelopment
+*/
+.popular-food .thumbnail{
+    padding:0px;
+    border:none;
+    border-radius:4px; 
+}
+.popular-food .thumbnail > img{
+    border-bottom: 5px solid #8ac323;
+    width: 100%;
+    height: 195px;
+}
+.popular-food .thumbnail > h4{
+    border:1px solid #eee;
+    margin-top: 0px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    color: black;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+
+}
+.popular-food .thumbnail > h4 >span{
+    color: #8ac323;
+    padding-right: 4px;
+}
+.food-middle {
+    background-color: #f7f7f7;
+    min-height: 700px;
+}
+.restaurant-list .img-thumbnail{
+    padding:0px;
+    border:none;
+    border-bottom: 1px solid #8ac323;
+    width: 100%;
+    height: 138px;
+}
+/*.restaurant-list .col-sm-8{
+   
+}
+.type >span{
+    color:#919db8 !important;
+}
+ .btn-sm{
+    background-color: #8ac323;
+    color: #fff;
+}
+ h3{
+    color: black;
+    margin-top: 0px;
+}
+ p{
+    margin-bottom: 5px;
+}
+ p >span {
+    padding-right: 10px;
+    color:#949494;
+}
+.ratings,.ratings >span {
+    color:#d4d4d4 !important;
+}
+#r-lists > div{
+    background-color: #fff;
+    border-bottom:1px solid #f7f7f7;
+    height: 180px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    
+}
+*/
+#list-section{
+    min-height: 300px;
+    background-color: #fff;
+
+}
+.restaurant-lists{
+    min-height: 300px;
+    background-color: #fff;
+    border:1px solid #eee;
+}
+.restaurant-lists > div >img{
+    padding:0px;
+    border:none;
+    border-bottom: 1px solid #8ac323;
+    width: 100%;
+    height: 138px;
+}
+.restaurant-lists > div{
+    border-bottom: 1px solid #eee;
+    height: 200px;
+    padding-top: 20px;
+    padding-bottom: 20px
+}
+.featured{
+    min-height: 300px;   
+}
+
+.featured .col-sm-12{
+    background-color: #fff;
+}
+.featured img{
+    width: 100%;  
+    border-bottom: 2px solid lime;
+    
+}
+
+.map >img{
+    width:100%;
+}
+.banner.text-center > img {
+    padding-top: 15px;
+}
+.pagination-section{
+    padding-top: 30px;
+}
+.save-btn{
+    background-color: #8ac323;
+    color: #fff;
+    
+    margin-right: 30px;
+    
+}
