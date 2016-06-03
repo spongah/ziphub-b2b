@@ -139,6 +139,30 @@ and open the template in the editor.
                 $('#listing-pages').html(pagesHTML.join(''));
             }
 
+            function showGoogleMap(searchResults, options) {
+                mapHTML = [];
+                mapCenter = searchResults.metaProperties.searchLat + "," + searchResults.metaProperties.searchLon;
+                mapZoom = "11";
+                mapMarkerColor = "Red";
+                mapSize = "300x250";
+                mapType = "roadmap";
+                mapAPIKey = "AIzaSyBZQX8qREaPClU_4ej-W7iWCVX5hDV1E5E";
+
+                mapHTML.push('<img src="https://maps.googleapis.com/maps/api/staticmap?');
+                mapHTML.push('center=' + mapCenter + '&');
+                mapHTML.push('zoom=' + mapZoom + '&');
+                mapHTML.push('size=' + mapSize + '&');
+                mapHTML.push('maptype=' + mapType + '&');
+                mapHTML.push('markers=color:' + mapMarkerColor + '%7Clabel:C%7C');
+                if (searchResults.searchListings != "") {
+                    for (x=0; x<searchResults.searchListings.searchListing.length; x++) {
+                        mapHTML.push(searchResults.searchListings.searchListing[x].latitude + "," + searchResults.searchListings.searchListing[x].longitude + "%7C");
+                    }
+                }
+                mapHTML.push('&key=AIzaSyBZQX8qREaPClU_4ej-W7iWCVX5hDV1E5E">')
+                $('#map').html(mapHTML.join(''));
+            }
+
             function processResults(searchResult, options) {
                 console.log("searchResult Object:");
                 console.log(searchResult);
@@ -148,6 +172,7 @@ and open the template in the editor.
                 mainListings(searchResult, options);
                 bottomCounter(searchResult, options);
                 displayPages(searchResult, options);
+                showGoogleMap(searchResult, options);
             }
 
         </script>
@@ -265,9 +290,7 @@ and open the template in the editor.
                         <div class="clearfix"></div>
                         <div class="col-md-8" id="business-listing"></div>
                         <div class="col-md-4" id="side-pane">
-                            <div id="map">
-                                <img src="img/subpage/res-map.png">
-                            </div>
+                            <div id="map"></div>
                             <div id="featured-listings">
                                 Featured Listings
                             </div>
