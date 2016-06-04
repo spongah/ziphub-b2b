@@ -158,12 +158,11 @@ and open the template in the editor.
                 mapHTML.push('size=' + mapSize + '&');
                 mapHTML.push('maptype=' + mapType + '&');
                 if (searchResults.searchListings != "") {
-                    for (x=0; x<searchResults.searchListings.searchListing.length; x++) {
+                    for (x=0; x<searchResults.searchListings.searchListing.length && x<40; x++) {
                         mapHTML.push('&markers=color:' + mapMarkerColor + '|label:' + ((x + 1) + (options.page * options.count) - options.count) + '|' + searchResults.searchListings.searchListing[x].latitude + "," + searchResults.searchListings.searchListing[x].longitude);
                     }
                 }
                 mapHTML.push('&key=AIzaSyBZQX8qREaPClU_4ej-W7iWCVX5hDV1E5E">')
-                console.log(mapHTML.join(''));
                 $('#map').html(mapHTML.join(''));
             }
 
@@ -207,6 +206,7 @@ and open the template in the editor.
                     var formTerm = "";
                     var formLocation = "";
                     var pageNum = 1;
+                    var listingCount = "";
                     if (parameters.formTerm != undefined || "") { 
                         formTerm = parameters.formTerm.replace(/\+/g, " ").replace(/%2B/g, " ").trim();
                         document.getElementById("form-term").setAttribute('value', formTerm); 
@@ -216,10 +216,11 @@ and open the template in the editor.
                         document.getElementById("form-location").setAttribute('value', formLocation); 
                     }
                     if (parameters.page != "") { pageNum = Number(parameters.page) }
+                    if (parameters.listingcount != "") { listingCount = Math.min(Number(parameters.listingcount), 50); }
                 }
 
                 // Send request to YP.com API and when the results are received, send to processResults function
-                getSearchResults(processResults, options = {term: formTerm, location: formLocation, page: pageNum});
+                getSearchResults(processResults, options = {term: formTerm, location: formLocation, page: pageNum, listingCount: listingCount});
             });
 
         </script>
