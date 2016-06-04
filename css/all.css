@@ -8,6 +8,7 @@ and open the template in the editor.
     Author     : yytdevelopment
 */
 
+/* Fonts wont work unless this page is on ziphub.com.  UNCOMMENT FOR PRODUCTION
 @font-face{
     font-family: helveticaneue-med;
     src:url('../fonts/HelveticaNeueMed.ttf')
@@ -53,6 +54,9 @@ and open the template in the editor.
     font-family: SourceSansRegular;
     src:url('../fonts/SourceSansPro-Regular.otf')
 }
+
+*/
+
 .middle-body p{
     font-family: HelveticaNeueLTStd-Roman;
 }
