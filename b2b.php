@@ -31,7 +31,7 @@ and open the template in the editor.
                 options = {term: searchTerm, location: searchLocation, page: pageNum, sort: searchSort, radius: searchRadius, count: searchListingCount, apiKey: apiKey};
 
                 // Get JSON object array and assign to json variable
-                var queryString = "http://pubapi.yp.com/search-api/search/devapi/search?term=" + searchTerm + "%2C&searchloc=" + searchLocation + "&format=json&pagenum=" + pageNum + "&sort=" + searchSort + "&radius=" + searchRadius + "&listingcount=" + searchListingCount + "&key=" + apiKey + "&callback=?"
+                var queryString = "//pubapi.yp.com/search-api/search/devapi/search?term=" + searchTerm + "%2C&searchloc=" + searchLocation + "&format=json&pagenum=" + pageNum + "&sort=" + searchSort + "&radius=" + searchRadius + "&listingcount=" + searchListingCount + "&key=" + apiKey + "&callback=?"
                 console.log("Query String:");
                 console.log(queryString);
                 $.getJSON(queryString, function(json) {
@@ -153,7 +153,7 @@ and open the template in the editor.
                 mapType = "roadmap";
                 mapAPIKey = "AIzaSyBZQX8qREaPClU_4ej-W7iWCVX5hDV1E5E";
 
-                mapHTML.push('<img src="https://maps.googleapis.com/maps/api/staticmap?');
+                mapHTML.push('<img src="//maps.googleapis.com/maps/api/staticmap?');
                 mapHTML.push('center=' + mapCenter + '&');
                 mapHTML.push('zoom=' + mapZoom + '&');
                 mapHTML.push('size=' + mapSize + '&');
