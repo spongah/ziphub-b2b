@@ -66,7 +66,12 @@ and open the template in the editor.
                         if (searchResult.searchListings.searchListing[x].adImage == "") { listings.push('<div class="col-lg-4" id="listing-image"><img src="img/list-image.png"></div>'); } else { listings.push('<div class="col-lg-4" id="listing-image"><img src="' + searchResult.searchListings.searchListing[x].adImage + '" style="width: 209px;"></div>'); }
 
                         // Push listing info
-                        listings.push('<div class="col-md-7" id="listing-info"><a href="#" style="padding-left:8px;">' + listingCategory + '</a><h3 style="padding-left:7px;">' + ((x + 1) + (options.page * options.count) - options.count) + '. ' + listingBusinessName + '</h3><p><img src="img/phone-large.png" style="width:21px;height:21px;"> ' + listingPhoneNumber + '</p>');
+                        listings.push('<div class="col-md-7" id="listing-info"><a href="#" style="padding-left:8px;">' + listingCategory + '</a><h3 style="padding-left:7px;">' + ((x + 1) + (options.page * options.count) - options.count) + '. ' + listingBusinessName + '</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="img/phone-large.png" style="width:21px;height:21px;"> ' + listingPhoneNumber + '</span>');
+
+                        // Display "Open 24hrs" if listing is open 24hrs
+                        listings.push('<span class="col-6-md" id="open24">');
+                        if (searchResult.searchListings.searchListing[x].openHours.includes('24')) { listings.push('Open 24hrs'); }
+                        listings.push('</span></p><div class="clearfix"></div>');
                         
                         // If address contains PO BOX then dont display location icon, else display icon
                         if (listingAddress.toString().toUpperCase().includes('PO') || listingAddress.toString().toUpperCase().includes('BOX') || listingAddress.toString().toUpperCase().includes('P.O')) { listings.push('<p style="padding-left:5px">'); } else { listings.push('<p><img src="img/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> '); }
@@ -142,7 +147,7 @@ and open the template in the editor.
             function showGoogleMap(searchResults, options) {
                 mapHTML = [];
                 mapCenter = searchResults.metaProperties.searchLat + "," + searchResults.metaProperties.searchLon;
-                mapZoom = "11";
+                mapZoom = "";
                 mapMarkerColor = "Red";
                 mapSize = "300x250";
                 mapType = "roadmap";
@@ -153,13 +158,13 @@ and open the template in the editor.
                 mapHTML.push('zoom=' + mapZoom + '&');
                 mapHTML.push('size=' + mapSize + '&');
                 mapHTML.push('maptype=' + mapType + '&');
-                mapHTML.push('markers=color:' + mapMarkerColor + '%7Clabel:C%7C');
                 if (searchResults.searchListings != "") {
                     for (x=0; x<searchResults.searchListings.searchListing.length; x++) {
-                        mapHTML.push(searchResults.searchListings.searchListing[x].latitude + "," + searchResults.searchListings.searchListing[x].longitude + "%7C");
+                        mapHTML.push('&markers=color:' + mapMarkerColor + '|label:' + ((x + 1) + (options.page * options.count) - options.count) + '|' + searchResults.searchListings.searchListing[x].latitude + "," + searchResults.searchListings.searchListing[x].longitude);
                     }
                 }
                 mapHTML.push('&key=AIzaSyBZQX8qREaPClU_4ej-W7iWCVX5hDV1E5E">')
+                console.log(mapHTML.join(''));
                 $('#map').html(mapHTML.join(''));
             }
 

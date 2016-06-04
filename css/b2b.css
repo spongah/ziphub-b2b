@@ -23,7 +23,7 @@
     box-shadow: 1px 1px 1px 1px #DEDEDE;
 }
 
-#business-listing{
+#business-listing {
     background-color: white;
     padding-top: 15px;
     padding-bottom: 15px;
@@ -31,6 +31,10 @@
     margin-right: 25px;
     border-radius: 5px;
     box-shadow: 1px 1px 1px 1px #DEDEDE;
+}
+
+#open24 {
+		color: #8ac323;
 }
 
 #listing-image {
@@ -48,17 +52,17 @@
 }
 
 #listing-pages {
-	padding-right: 10px;
+		padding-right: 10px;
 }
 
 #listing-button-link {
-	text-decoration: none;
+		text-decoration: none;
 }
 
 #listing-button-selected {
-	text-decoration: none;
-	pointer-events: none;
-  cursor: default;
+		text-decoration: none;
+		pointer-events: none;
+	  cursor: default;
 }
 
 #listing-buttons {
@@ -106,9 +110,9 @@
 }
 
 #side-pane {
-	width: 300px;
-	padding-left: 0px;
-	padding-right: 0px;
+		width: 300px;
+		padding-left: 0px;
+		padding-right: 0px;
 }
 
 #map {
@@ -117,8 +121,8 @@
 }
 
 #featured-listings {
-	font-size: 20px;
-	color: #8ac323;
+		font-size: 20px;
+		color: #8ac323;
 }
 
 #listing-sidebar {
@@ -134,7 +138,7 @@
 }
 
 #listing-info {
-	padding: 15px;
+		padding: 15px;
 }
 
 #listing-info h3{
@@ -152,12 +156,12 @@
 }
 
 #listing-info p{
-	font-size: 14px;
-	margin-top: 0px;
-	margin-bottom: 1px;
-	margin-left: 4px;
+		font-size: 14px;
+		margin-top: 0px;
+		margin-bottom: 1px;
+		margin-left: 4px;
 }
 
 #star-rating {
-	margin-top: 7px;
+		margin-top: 7px;
 }
