@@ -271,7 +271,7 @@ and open the template in the editor.
                                 <input type="text" placeholder="Categories" class="form-control">
                             </div>
                             <div class="col-sm-1">
-                                <img src="img/search-button.png" id="search-icon" class="pull-right"/>
+                                <input type="image" src="img/search-button.png" alt="Submit" id="search-icon" class="pull-right"/></button>
                             </div>
                         </form>
                     </div>
