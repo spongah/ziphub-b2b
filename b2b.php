@@ -12,8 +12,7 @@ and open the template in the editor.
         <link rel="stylesheet" href="css/all.css"/>
         <link rel="stylesheet" href="css/mystyle.css"/>
         <link rel="stylesheet" href="css/b2b.css"/>
-   <!--     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script> -->
-        <script src="js/jquery-1.6.2.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script>
 
             function getSearchResults(callback, options){
