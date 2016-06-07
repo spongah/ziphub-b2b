@@ -4,6 +4,7 @@
 
 #featured-businesses {
     padding-top: 25px;
+    text-align: center;
 }
 
 #show-search {
@@ -117,6 +118,7 @@
 
 #map {
 		width: 300px;
+		height: 250px;
 		margin-bottom: 15px;
 }
 
@@ -126,6 +128,7 @@
 }
 
 #listing-sidebar {
+		text-align: center;
 		width: 300px;
     background-color: white;
     padding-top: 15px;

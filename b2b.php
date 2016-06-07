@@ -14,6 +14,7 @@ and open the template in the editor.
         <link rel="stylesheet" href="css/b2b.css"/>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script>
+            var searchResult, options;
 
             function getSearchResults(callback, options){
 
@@ -40,7 +41,7 @@ and open the template in the editor.
                 }); 
             };
             
-            function mainListings(searchResult, options) {
+            function mainListings() {
 
                 // Create an empty array to store listings
                 var listings = [];
@@ -91,13 +92,13 @@ and open the template in the editor.
                 $('#business-listing').html(listings.join(''));
             }
 
-            function showSearch(searchResult, options) {
+            function showSearch() {
 
                 // Show search criteria
                 $('#show-search').html('Searching ' + options.term + ' Listings in ' + searchResult.metaProperties.searchCity + ', ' + searchResult.metaProperties.searchState);
             }
 
-            function bottomCounter(searchResult, options) {
+            function bottomCounter() {
                 var firstResult = (options.page * options.count) - options.count + 1;
                 var lastResult = Math.min((options.page * options.count), searchResult.metaProperties.totalAvailable);
                 var totalResults = searchResult.metaProperties.totalAvailable
@@ -110,7 +111,7 @@ and open the template in the editor.
                 }
             }
 
-            function displayPages(searchResult, options) {
+            function displayPages() {
                 var pagesHTML = [];
                 var totalPages = Math.ceil(searchResult.metaProperties.totalAvailable / options.count)
                 var thisPage = options.page;
@@ -143,9 +144,9 @@ and open the template in the editor.
                 $('#listing-pages').html(pagesHTML.join(''));
             }
 
-            function showGoogleMap(searchResults, options) {
+            function showGoogleMap() {
                 mapHTML = [];
-                mapCenter = searchResults.metaProperties.searchLat + "," + searchResults.metaProperties.searchLon;
+                mapCenter = searchResult.metaProperties.searchLat + "," + searchResult.metaProperties.searchLon;
                 mapZoom = "";
                 mapMarkerColor = "Red";
                 mapSize = "300x250";
@@ -157,26 +158,83 @@ and open the template in the editor.
                 mapHTML.push('zoom=' + mapZoom + '&');
                 mapHTML.push('size=' + mapSize + '&');
                 mapHTML.push('maptype=' + mapType + '&');
-                if (searchResults.searchListings != "") {
-                    for (x=0; x<searchResults.searchListings.searchListing.length && x<40; x++) {
-                        mapHTML.push('&markers=color:' + mapMarkerColor + '|label:' + ((x + 1) + (options.page * options.count) - options.count) + '|' + searchResults.searchListings.searchListing[x].latitude + "," + searchResults.searchListings.searchListing[x].longitude);
+                if (searchResult.searchListings != "") {
+                    for (x=0; x<searchResult.searchListings.searchListing.length && x<40; x++) {
+                        mapHTML.push('&markers=color:' + mapMarkerColor + '|label:' + ((x + 1) + (options.page * options.count) - options.count) + '|' + searchResult.searchListings.searchListing[x].latitude + "," + searchResult.searchListings.searchListing[x].longitude);
                     }
                 }
                 mapHTML.push('&key=AIzaSyBZQX8qREaPClU_4ej-W7iWCVX5hDV1E5E">')
                 $('#map').html(mapHTML.join(''));
             }
 
-            function processResults(searchResult, options) {
+            var map;
+
+            function loadScript(url, callback){
+
+                var script = document.createElement("script")
+                script.type = "text/javascript";
+
+                if (script.readyState){  //IE
+                    script.onreadystatechange = function(){
+                        if (script.readyState == "loaded" ||
+                                script.readyState == "complete"){
+                            script.onreadystatechange = null;
+                            callback();
+                        }
+                    };
+                } else {  //Others
+                    script.onload = function(){
+                        callback;
+                    };
+                }
+
+                script.src = url;
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+
+            function initMap() {
+                var bounds = new google.maps.LatLngBounds();
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: searchResult.metaProperties.searchLat, lng: searchResult.metaProperties.searchLon},
+                    zoom: 13
+                }); 
+                if (searchResult.searchListings != "") {
+                    for (x=0; x<searchResult.searchListings.searchListing.length && x<40; x++) {
+                        marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(searchResult.searchListings.searchListing[x].latitude, searchResult.searchListings.searchListing[x].longitude),
+                        //    label: "" + ((x + 1) + (options.page * options.count) - options.count),
+                            title: searchResult.searchListings.searchListing[x].businessName,
+                            url: searchResult.searchListings.searchListing[x].businessNameURL,
+                            map: map
+                        });
+                        bounds.extend(marker.position);
+                        google.maps.event.addListener(marker, 'click', function() {
+                            window.location.href = this.url;
+                        });
+                    }
+                }
+                map.fitBounds(bounds);
+            }
+
+            function loadMarkers() {
+
+            }
+
+            function processResults(searchResults, optionsHash) {
+                searchResult = searchResults;
+                options = optionsHash;
                 console.log("searchResult Object:");
                 console.log(searchResult);
                 console.log("Options Hash:");
                 console.log(options);
-                showSearch(searchResult, options);
-                mainListings(searchResult, options);
-                bottomCounter(searchResult, options);
-                displayPages(searchResult, options);
-                showGoogleMap(searchResult, options);
+                showSearch();
+                mainListings();
+                bottomCounter();
+                displayPages();
+                //showGoogleMap();
+                loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBqK8fPXhp5mlYyV7hbbKsKWfVAQZT8g8U&callback=initMap", loadMarkers());
             }
+
 
         </script>
 
@@ -285,6 +343,7 @@ and open the template in the editor.
                 <div id="featured-businesses">
                     <h1 class="text-center">Featured Businesses</h1>
                     <p class="text-center"> <img src="img/border.png"/></p>
+                    <img src="img/fakefeaturedbusinesses.png">
                     <hr>
                 </div>
                 <div class="container">
@@ -299,7 +358,7 @@ and open the template in the editor.
                             <div id="featured-listings">
                                 Featured Listings
                             </div>
-                            <div id="listing-sidebar"></div>
+                            <div id="listing-sidebar"><img src="img/fakefeaturedlistings.png"></div>
                         </div>
                         <div class="clearfix"></div>
                         <div class="col-md-12" id="listing-footer">
