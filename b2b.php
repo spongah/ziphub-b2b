@@ -26,9 +26,10 @@ and open the template in the editor.
                 var searchRadius = options.radius || 20;
                 var searchListingCount = options.listingCount || 10;
                 var apiKey = options.apiKey || "mssp53w72h";
+                var filterLetter = options.filter || "";
 
                 // Set options hash based on input and/or defaults
-                options = {term: searchTerm, location: searchLocation, page: pageNum, sort: searchSort, radius: searchRadius, count: searchListingCount, apiKey: apiKey};
+                options = {term: searchTerm, location: searchLocation, page: pageNum, sort: searchSort, radius: searchRadius, count: searchListingCount, apiKey: apiKey, filter: filterLetter};
 
                 // Get JSON object array and assign to json variable
                 var queryString = "//pubapi.yp.com/search-api/search/devapi/search?term=" + searchTerm + "%2C&searchloc=" + searchLocation + "&format=json&pagenum=" + pageNum + "&sort=" + searchSort + "&radius=" + searchRadius + "&listingcount=" + searchListingCount + "&key=" + apiKey + "&callback=?"
@@ -216,8 +217,22 @@ and open the template in the editor.
                 map.fitBounds(bounds);
             }
 
-            function loadMarkers() {
-
+            function searchFilter() {
+                allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                letterArray = allLetters.split('');
+                console.log(letterArray);
+                searchFilterHTML = [];
+                var thisURL = document.location.toString();
+                var thisURLnoFilter = thisURL.split("&filter=")[0].replace("&filter=", "");
+                var paramChar = "";
+                if (document.location.search == "") { paramChar = "?" } else { paramChar = "&" };
+                searchFilterHTML.push('<span id="filter-label"><img src="img/green-search.png" height="15px" width="15px" style="margin-bottom:2px; margin-right:5px">Filter:</span>');
+                console.log(options.filter);    
+                for (x=0; x<letterArray.length; x++) {
+                    if (letterArray[x] == options.filter) { searchFilterHTML.push('<a href="' + thisURLnoFilter + paramChar + 'filter=' + letterArray[x] + '" id="filter-button-selected"><span id="filter-buttons-selected">' + letterArray[x] + '</span></a>'); } else {
+                    searchFilterHTML.push('<a href="' + thisURLnoFilter + paramChar + 'filter=' + letterArray[x] + '" id="filter-button-link"><span id="filter-buttons">' + letterArray[x] + '</span></a>'); }
+                }
+                $('#search-filter').html(searchFilterHTML.join(''));
             }
 
             function processResults(searchResults, optionsHash) {
@@ -232,7 +247,8 @@ and open the template in the editor.
                 bottomCounter();
                 displayPages();
                 //showGoogleMap();
-                loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBqK8fPXhp5mlYyV7hbbKsKWfVAQZT8g8U&callback=initMap", loadMarkers());
+                loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBqK8fPXhp5mlYyV7hbbKsKWfVAQZT8g8U&callback=initMap");
+                searchFilter();
             }
 
 
@@ -265,6 +281,7 @@ and open the template in the editor.
                     var formLocation = "";
                     var pageNum = 1;
                     var listingCount = "";
+                    var filterLetter = "";
                     if (parameters.formTerm != undefined || "") { 
                         formTerm = parameters.formTerm.replace(/\+/g, " ").replace(/%2B/g, " ").trim();
                         document.getElementById("form-term").setAttribute('value', formTerm); 
@@ -275,10 +292,10 @@ and open the template in the editor.
                     }
                     if (parameters.page != "") { pageNum = Number(parameters.page) }
                     if (parameters.listingcount != "") { listingCount = Math.min(Number(parameters.listingcount), 50); }
+                    if (parameters.filter != undefined) { filterLetter = parameters.filter.substring(0, 1).toUpperCase(); }
                 }
-
                 // Send request to YP.com API and when the results are received, send to processResults function
-                getSearchResults(processResults, options = {term: formTerm, location: formLocation, page: pageNum, listingCount: listingCount});
+                getSearchResults(processResults, options = {term: formTerm, location: formLocation, page: pageNum, listingCount: listingCount, filter: filterLetter});
             });
 
         </script>
@@ -350,7 +367,7 @@ and open the template in the editor.
                     <div>
                         <div class="col-md-12" id="show-search"></div>
                         <div class="clearfix"></div>
-     <!--                   <div class="col-md-10" id="search-filter"></div>  -->
+                        <div class="col-md-12" id="search-filter"></div>
                         <div class="clearfix"></div>
                         <div class="col-md-8" id="business-listing"></div>
                         <div class="col-md-4" id="side-pane">

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<!-- saved from url=(0101)http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&formLocation=salt+lake+city&x=0&y=0&filter=a -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css">.gm-style .gm-style-mtc label,.gm-style .gm-style-mtc div{font-weight:400}</style><style type="text/css">.gm-style-pbc{transition:opacity ease-in-out;background-color:black;text-align:center}.gm-style-pbt{font-size:22px;color:white;font-family:Roboto,Arial,sans-serif;position:relative;margin:0;top:50%;-webkit-transform:translateY(-50%);-ms-transform:translateY(-50%);transform:translateY(-50%)}</style><link type="text/css" rel="stylesheet" href="./ziphub_files/css"><style type="text/css">.gm-style .gm-style-cc span,.gm-style .gm-style-cc a,.gm-style .gm-style-mtc div{font-size:10px}</style><style type="text/css">@media print {  .gm-style .gmnoprint, .gmnoprint {    display:none  }}@media screen {  .gm-style .gmnoscreen, .gmnoscreen {    display:none  }}</style><style type="text/css">.gm-style{font-family:Roboto,Arial,sans-serif;font-size:11px;font-weight:400;text-decoration:none}.gm-style img{max-width:none}</style>
+        
+        <title>ziphub </title>
+        <link rel="stylesheet" href="./ziphub_files/bootstrap.min.css">
+        <link rel="stylesheet" href="./ziphub_files/all.css">
+        <link rel="stylesheet" href="./ziphub_files/mystyle.css">
+        <link rel="stylesheet" href="./ziphub_files/b2b.css">
+        <script src="./ziphub_files/jquery.min.js"></script>
+        <script>
+            var searchResult, options;
+
+            function getSearchResults(callback, options){
+
+                // Set variables to isolate search options
+                var searchTerm = options.term || "Real Estate";
+                var searchLocation = options.location || "Las Vegas";
+                var pageNum = options.page || 1;
+                var searchSort = options.sort || "distance";
+                var searchRadius = options.radius || 20;
+                var searchListingCount = options.listingCount || 10;
+                var apiKey = options.apiKey || "mssp53w72h";
+
+                // Set options hash based on input and/or defaults
+                options = {term: searchTerm, location: searchLocation, page: pageNum, sort: searchSort, radius: searchRadius, count: searchListingCount, apiKey: apiKey};
+
+                // Get JSON object array and assign to json variable
+                var queryString = "//pubapi.yp.com/search-api/search/devapi/search?term=" + searchTerm + "%2C&searchloc=" + searchLocation + "&format=json&pagenum=" + pageNum + "&sort=" + searchSort + "&radius=" + searchRadius + "&listingcount=" + searchListingCount + "&key=" + apiKey + "&callback=?"
+                console.log("Query String:");
+                console.log(queryString);
+                $.getJSON(queryString, function(json) {
+
+                    // Send listing HTML to callback
+                    callback(json.searchResult, options); 
+                }); 
+            };
+            
+            function mainListings() {
+
+                // Create an empty array to store listings
+                var listings = [];
+    
+                // Loop through the listing array and add html to new array for business listings
+                if (searchResult.searchListings == "") {
+                    listings.push('No results found.');
+                } else {
+                    for(var x=0; x < searchResult.searchListings.searchListing.length; x++) {
+
+                        // Set display variables for json business listing
+                        var listingCategory = searchResult.searchListings.searchListing[x].categories.split('|')[0];
+                        var listingBusinessName = searchResult.searchListings.searchListing[x].businessName.substring(0,26);
+                        var listingPhoneNumber = "+1 " + searchResult.searchListings.searchListing[x].phone;
+                        var listingAddress = searchResult.searchListings.searchListing[x].street.substring(0,23) + " " + searchResult.searchListings.searchListing[x].city + " " + searchResult.searchListings.searchListing[x].state + " " + searchResult.searchListings.searchListing[x].zip;
+                        var listingRating = searchResult.searchListings.searchListing[x].averageRating;
+
+                        // Use hr tag only if listing is not first of list
+                        if (x != 0) { listings.push('<hr>'); }
+
+                        // Push listing image
+                        if (searchResult.searchListings.searchListing[x].adImage == "") { listings.push('<div class="col-lg-4" id="listing-image"><img src="img/list-image.png"></div>'); } else { listings.push('<div class="col-lg-4" id="listing-image"><img src="' + searchResult.searchListings.searchListing[x].adImage + '" style="width: 209px;"></div>'); }
+
+                        // Push listing info
+                        listings.push('<div class="col-md-7" id="listing-info"><a href="#" style="padding-left:8px;">' + listingCategory + '</a><h3 style="padding-left:7px;">' + ((x + 1) + (options.page * options.count) - options.count) + '. ' + listingBusinessName + '</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="img/phone-large.png" style="width:21px;height:21px;"> ' + listingPhoneNumber + '</span>');
+
+                        // Display "Open 24hrs" if listing is open 24hrs
+                        listings.push('<span class="col-6-md" id="open24">');
+                        if (searchResult.searchListings.searchListing[x].openHours.includes('24')) { listings.push('Open 24hrs'); }
+                        listings.push('</span></p><div class="clearfix"></div>');
+                        
+                        // If address contains PO BOX then dont display location icon, else display icon
+                        if (listingAddress.toString().toUpperCase().includes('PO') || listingAddress.toString().toUpperCase().includes('BOX') || listingAddress.toString().toUpperCase().includes('P.O')) { listings.push('<p style="padding-left:5px">'); } else { listings.push('<p><img src="img/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> '); }
+                        
+                        // Star-rating Div
+                        listings.push(listingAddress + '</p><div id="star-rating" style="padding-left:6px;padding-top:1px;">');
+                      
+                        // Push star rating
+                        for(var y=0; y < 5; y++) {
+                            if (y < listingRating) { listings.push('<img src="img/star-gold-large.png" style="width:17px;height:17px;">'); } else { listings.push('<img src="img/star-grey-large.png" style="width:17px;height:17px;">'); }
+                        }
+
+                        // Push number of ratings value, or "no ratings" if ratings == 0
+                        if (listingRating != 0) { listings.push('<span id="ratings" style="font-style:italic;color:#CCCCCC"> (' + searchResult.searchListings.searchListing[x].ratingCount + ')</span>'); } else { listings.push(' <span id="no-ratings" style="font-style:italic;color:#CCCCCC">no ratings</span>'); }
+                        listings.push('</div></div><div class="clearfix"></div>');
+                    }
+                }
+                $('#business-listing').html(listings.join(''));
+            }
+
+            function showSearch() {
+
+                // Show search criteria
+                $('#show-search').html('Searching ' + options.term + ' Listings in ' + searchResult.metaProperties.searchCity + ', ' + searchResult.metaProperties.searchState);
+            }
+
+            function bottomCounter() {
+                var firstResult = (options.page * options.count) - options.count + 1;
+                var lastResult = Math.min((options.page * options.count), searchResult.metaProperties.totalAvailable);
+                var totalResults = searchResult.metaProperties.totalAvailable
+
+                // Show range of results that are being displayed, and total results
+                if (totalResults != 0) {
+                    $('#listing-counter').html('Showing ' + firstResult + '-' + lastResult + ' of ' + totalResults + ' Results');
+                } else {
+                    $('#listing-counter').html('Showing 0 Results');
+                }
+            }
+
+            function displayPages() {
+                var pagesHTML = [];
+                var totalPages = Math.ceil(searchResult.metaProperties.totalAvailable / options.count)
+                var thisPage = options.page;
+                var thisURL = document.location.toString();
+                var thisURLnoPage = thisURL.split("&page=")[0].replace("&page=", "");
+                var paramChar = "";
+
+                if (document.location.search == "") { paramChar = "?" } else { paramChar = "&" };
+                if (thisPage > 1) { pagesHTML.push('<a href="' + thisURLnoPage + paramChar + 'page=' + (thisPage - 1) + '" id="listing-button-link"><img src="img/green-arrow-left.png" height="25px" width="25px" style="margin-bottom:2px"><span id="listing-button-next">Prev</span></a>'); }
+                if ((thisPage + 5) < totalPages) { 
+                    for (x=-4; x<6; x++) {
+                        if ((thisPage + x) > 0) {
+                            if (x == 0) { pagesHTML.push('<a href="" id="listing-button-selected"><span id="listing-buttons-selected">' + thisPage + '</span></a>'); } else {
+                                if ((thisPage + x) < totalPages) { pagesHTML.push('<a href="' + thisURLnoPage + paramChar + 'page=' + (thisPage + x) + '" id="listing-button-link"><span id="listing-buttons">' + (thisPage + x) + '</span></a>'); }
+                            }
+                        }
+                    }
+                } else {
+                    for (x=(totalPages-9); x<=totalPages; x++) {
+                        if (x > 0) {
+                            if (x == thisPage){ pagesHTML.push('<a href="" id="listing-button-selected"><span id="listing-buttons-selected">' + thisPage + '</span></a>');
+                                } else { pagesHTML.push('<a href="' + thisURLnoPage + paramChar + 'page=' + x + '" id="listing-button-link"><span id="listing-buttons">' + x + '</span></a>'); 
+                            }
+                        }
+                    }
+                }
+                
+
+                if (thisPage < totalPages) { pagesHTML.push('<a href="' + thisURLnoPage + paramChar + 'page=' + (thisPage + 1) + '" id="listing-button-link"><span id="listing-button-next">Next</span><img src="img/green-arrow-right.png" height="25px" width="25px" style="margin-bottom:2px"></a>'); }
+                $('#listing-pages').html(pagesHTML.join(''));
+            }
+
+            function showGoogleMap() {
+                mapHTML = [];
+                mapCenter = searchResult.metaProperties.searchLat + "," + searchResult.metaProperties.searchLon;
+                mapZoom = "";
+                mapMarkerColor = "Red";
+                mapSize = "300x250";
+                mapType = "roadmap";
+                mapAPIKey = "AIzaSyBZQX8qREaPClU_4ej-W7iWCVX5hDV1E5E";
+
+                mapHTML.push('<img src="//maps.googleapis.com/maps/api/staticmap?');
+                mapHTML.push('center=' + mapCenter + '&');
+                mapHTML.push('zoom=' + mapZoom + '&');
+                mapHTML.push('size=' + mapSize + '&');
+                mapHTML.push('maptype=' + mapType + '&');
+                if (searchResult.searchListings != "") {
+                    for (x=0; x<searchResult.searchListings.searchListing.length && x<40; x++) {
+                        mapHTML.push('&markers=color:' + mapMarkerColor + '|label:' + ((x + 1) + (options.page * options.count) - options.count) + '|' + searchResult.searchListings.searchListing[x].latitude + "," + searchResult.searchListings.searchListing[x].longitude);
+                    }
+                }
+                mapHTML.push('&key=AIzaSyBZQX8qREaPClU_4ej-W7iWCVX5hDV1E5E">')
+                $('#map').html(mapHTML.join(''));
+            }
+
+            var map;
+
+            function loadScript(url, callback){
+
+                var script = document.createElement("script")
+                script.type = "text/javascript";
+
+                if (script.readyState){  //IE
+                    script.onreadystatechange = function(){
+                        if (script.readyState == "loaded" ||
+                                script.readyState == "complete"){
+                            script.onreadystatechange = null;
+                            callback();
+                        }
+                    };
+                } else {  //Others
+                    script.onload = function(){
+                        callback;
+                    };
+                }
+
+                script.src = url;
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+
+            function initMap() {
+                var bounds = new google.maps.LatLngBounds();
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: searchResult.metaProperties.searchLat, lng: searchResult.metaProperties.searchLon},
+                    zoom: 13
+                }); 
+                if (searchResult.searchListings != "") {
+                    for (x=0; x<searchResult.searchListings.searchListing.length && x<40; x++) {
+                        marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(searchResult.searchListings.searchListing[x].latitude, searchResult.searchListings.searchListing[x].longitude),
+                        //    label: "" + ((x + 1) + (options.page * options.count) - options.count),
+                            title: searchResult.searchListings.searchListing[x].businessName,
+                            url: searchResult.searchListings.searchListing[x].businessNameURL,
+                            map: map
+                        });
+                        bounds.extend(marker.position);
+                        google.maps.event.addListener(marker, 'click', function() {
+                            window.location.href = this.url;
+                        });
+                    }
+                }
+                map.fitBounds(bounds);
+            }
+
+            function searchFilter() {
+                searchFilterHTML = [];
+                letter = "A";
+                searchFilterHTML.push('<a href="" id="filter-button-link"><span id="filter-buttons">' + letter + '</span></a>');
+                searchFilterHTML.push('<a href="" id="filter-button-link"><span id="filter-buttons">B</span></a>');
+                $('#search-filter').html(searchFilterHTML.join(''));
+            }
+
+            function processResults(searchResults, optionsHash) {
+                searchResult = searchResults;
+                options = optionsHash;
+                console.log("searchResult Object:");
+                console.log(searchResult);
+                console.log("Options Hash:");
+                console.log(options);
+                showSearch();
+                mainListings();
+                bottomCounter();
+                displayPages();
+                //showGoogleMap();
+                loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBqK8fPXhp5mlYyV7hbbKsKWfVAQZT8g8U&callback=initMap");
+                searchFilter();
+            }
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+                $('form').each(function() {
+                    $(this).find('input').keypress(function(e) {
+                        // Enter pressed?
+                        if(e.which == 10 || e.which == 13) {
+                            this.form.submit();
+                        }
+                    });
+
+               //     $(this).find('input[type=submit]').hide();
+                });
+            });
+
+
+            $(document).ready(function(){
+                // Display "Loading"
+                $('#business-listing').html('<div class="col-md-12" style="margin-left:45%;"><img src="img/loading-icon.gif" style="height:25px;width:25px;"></div>');
+
+                if (document.location.search != "") {
+                    var search = location.search.substring(1);
+                    var parameters = JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}')
+                    var formTerm = "";
+                    var formLocation = "";
+                    var pageNum = 1;
+                    var listingCount = "";
+                    var filterLetter = "";
+                    if (parameters.formTerm != undefined || "") { 
+                        formTerm = parameters.formTerm.replace(/\+/g, " ").replace(/%2B/g, " ").trim();
+                        document.getElementById("form-term").setAttribute('value', formTerm); 
+                    }
+                    if (parameters.formLocation != undefined || "") { 
+                        formLocation = parameters.formLocation.replace(/\+/g, " ").replace(/%2B/g, " ").trim();
+                        document.getElementById("form-location").setAttribute('value', formLocation); 
+                    }
+                    if (parameters.page != "") { pageNum = Number(parameters.page) }
+                    if (parameters.listingcount != "") { listingCount = Math.min(Number(parameters.listingcount), 50); }
+                    console.log(parameters.filter);
+                //    if (parameters.filter != "") { filterLetter = parameters.filter.charAt(0); }
+                }
+
+                // Send request to YP.com API and when the results are received, send to processResults function
+                getSearchResults(processResults, options = {term: formTerm, location: formLocation, page: pageNum, listingCount: listingCount, filter: filterLetter});
+            });
+
+        </script>
+
+    <script type="text/javascript" src="./ziphub_files/js"></script><script type="text/javascript" charset="UTF-8" src="./ziphub_files/common.js"></script><script type="text/javascript" charset="UTF-8" src="./ziphub_files/map.js"></script><script type="text/javascript" charset="UTF-8" src="./ziphub_files/util.js"></script><script type="text/javascript" charset="UTF-8" src="./ziphub_files/marker.js"></script><script type="text/javascript" charset="UTF-8" src="./ziphub_files/onion.js"></script><script type="text/javascript" charset="UTF-8" src="./ziphub_files/ViewportInfoService.GetViewportInfo"></script><script type="text/javascript" charset="UTF-8" src="./ziphub_files/stats.js"></script><script type="text/javascript" charset="UTF-8" src="./ziphub_files/controls.js"></script><script type="text/javascript" charset="UTF-8" src="./ziphub_files/vt"></script><script type="text/javascript" charset="UTF-8" src="./ziphub_files/AuthenticationService.Authenticate"></script><script type="text/javascript" charset="UTF-8" src="https://maps.googleapis.com/maps/api/js/QuotaService.RecordEvent?1shttp%3A%2F%2Flocalhost%3A8888%2Fsub_pages%2Fb2b.php%3FformTerm%3Dchinese%26formLocation%3Dsalt%2Blake%2Bcity%26x%3D0%26y%3D0%26filter%3Da&amp;3sAIzaSyBqK8fPXhp5mlYyV7hbbKsKWfVAQZT8g8U&amp;5e0&amp;6u1&amp;7s4tb184&amp;callback=_xdc_._1imo1x&amp;token=77672"></script></head>
+    <body>
+        <div class="menu">
+            <div class="container">
+                <div class="col-sm-5 col-xs-12">
+                    <div class="logo-section col-sm-6">
+                        <img src="./ziphub_files/logo.png">
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="logo-text"> <span>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="green">Love one another</span></p>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xs-12">
+                    <ul class="nav nav-pills">
+                        <li><a>Stores</a></li>
+                        <li><a>Merchants</a></li>
+                        <li><a>Watch the Video</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3 col-xs-12">
+                    <button class="btn login-btn col-xs-6">Sign up</button>
+                    <button class="btn green-btn col-xs-6">Login</button>
+                </div>
+            </div>  
+        </div>
+            <div class="header">
+                <img src="./ziphub_files/b2b_header.png">
+                <div class="text-section">
+                    <h1>Discover B2B</h1>
+                    <p>You Save - You Earn - We Give</p>
+                </div>
+                <div class="header-form col-sm-8 hidden-xs">
+                    <div class="form form-horizontal" id="search-form">
+                        <form class="form-group">
+                            <div class="col-sm-1">
+                                <img src="./ziphub_files/menu-icon-1.png" id="menu-icon">
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="text" id="form-term" name="formTerm" placeholder="What are you Looking for?" class="form-control" value="chinese">
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="text" id="form-location" name="formLocation" placeholder="Las Vegas, NV" class="form-control" value="salt lake city">
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="text" placeholder="Categories" class="form-control">
+                            </div>
+                            <div class="col-sm-1">
+                                <input type="image" src="./ziphub_files/search-button.png" alt="Submit" id="search-icon" class="pull-right">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        
+        <div class="clearfix"></div>
+        <div id="whole-page">
+            <div class="container">
+                <div id="featured-businesses">
+                    <h1 class="text-center">Featured Businesses</h1>
+                    <p class="text-center"> <img src="./ziphub_files/border.png"></p>
+                    <img src="./ziphub_files/fakefeaturedbusinesses.png">
+                    <hr>
+                </div>
+                <div class="container">
+                    <div>
+                        <div class="col-md-12" id="show-search">Searching chinese Listings in Salt Lake City, UT</div>
+                        <div class="clearfix"></div>
+                        <div class="col-md-10" id="search-filter"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a" id="filter-button-link"><span id="filter-buttons">A</span></a><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a" id="filter-button-link"><span id="filter-buttons">B</span></a></div>
+                        <div class="clearfix"></div>
+                        <div class="col-md-8" id="business-listing"><div class="col-lg-4" id="listing-image"><img src="./ziphub_files/list-image.png"></div><div class="col-md-7" id="listing-info"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a#" style="padding-left:8px;"> Chinese Restaurants</a><h3 style="padding-left:7px;">1. Cindy Lee Cafe</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="./ziphub_files/phone-large.png" style="width:21px;height:21px;"> +1 (801) 359-4544</span><span class="col-6-md" id="open24"></span></p><div class="clearfix"></div><p><img src="./ziphub_files/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> 264 S Main St Salt Lake City UT 84101</p><div id="star-rating" style="padding-left:6px;padding-top:1px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"> <span id="no-ratings" style="font-style:italic;color:#CCCCCC">no ratings</span></div></div><div class="clearfix"></div><hr><div class="col-lg-4" id="listing-image"><img src="./ziphub_files/list-image.png"></div><div class="col-md-7" id="listing-info"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a#" style="padding-left:8px;"> Restaurants</a><h3 style="padding-left:7px;">2. P.F. Chang's China Bistro</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="./ziphub_files/phone-large.png" style="width:21px;height:21px;"> +1 (801) 539-0500</span><span class="col-6-md" id="open24"></span></p><div class="clearfix"></div><p><img src="./ziphub_files/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> 174 W Broadway Salt Lake City UT 84101</p><div id="star-rating" style="padding-left:6px;padding-top:1px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><span id="ratings" style="font-style:italic;color:#CCCCCC"> (23)</span></div></div><div class="clearfix"></div><hr><div class="col-lg-4" id="listing-image"><img src="./ziphub_files/list-image.png"></div><div class="col-md-7" id="listing-info"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a#" style="padding-left:8px;"> Sushi Bars</a><h3 style="padding-left:7px;">3. Tokyo Sushi &amp; Grill</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="./ziphub_files/phone-large.png" style="width:21px;height:21px;"> +1 (801) 906-0362</span><span class="col-6-md" id="open24"></span></p><div class="clearfix"></div><p><img src="./ziphub_files/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> 155 W 200 S Salt Lake City UT 84101</p><div id="star-rating" style="padding-left:6px;padding-top:1px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"> <span id="no-ratings" style="font-style:italic;color:#CCCCCC">no ratings</span></div></div><div class="clearfix"></div><hr><div class="col-lg-4" id="listing-image"><img src="./ziphub_files/list-image.png"></div><div class="col-md-7" id="listing-info"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a#" style="padding-left:8px;"> Asian Restaurants</a><h3 style="padding-left:7px;">4. J. Wong's Asian Bistro</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="./ziphub_files/phone-large.png" style="width:21px;height:21px;"> +1 (801) 350-0888</span><span class="col-6-md" id="open24"></span></p><div class="clearfix"></div><p><img src="./ziphub_files/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> 163 W 200 S # 101 Salt Lake City UT 84101</p><div id="star-rating" style="padding-left:6px;padding-top:1px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><span id="ratings" style="font-style:italic;color:#CCCCCC"> (1)</span></div></div><div class="clearfix"></div><hr><div class="col-lg-4" id="listing-image"><img src="./ziphub_files/list-image.png"></div><div class="col-md-7" id="listing-info"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a#" style="padding-left:8px;"> Chinese Restaurants</a><h3 style="padding-left:7px;">5. Charlie Chow's Dragon Gril</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="./ziphub_files/phone-large.png" style="width:21px;height:21px;"> +1 (801) 575-6700</span><span class="col-6-md" id="open24"></span></p><div class="clearfix"></div><p><img src="./ziphub_files/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> 255 E 400 S Salt Lake City UT 84111</p><div id="star-rating" style="padding-left:6px;padding-top:1px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><span id="ratings" style="font-style:italic;color:#CCCCCC"> (13)</span></div></div><div class="clearfix"></div><hr><div class="col-lg-4" id="listing-image"><img src="./ziphub_files/list-image.png"></div><div class="col-md-7" id="listing-info"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a#" style="padding-left:8px;"> Chinese Restaurants</a><h3 style="padding-left:7px;">6. Xiao Li</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="./ziphub_files/phone-large.png" style="width:21px;height:21px;"> +1 (801) 328-8688</span><span class="col-6-md" id="open24"></span></p><div class="clearfix"></div><p><img src="./ziphub_files/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> 307 W 200 S Ste 1000 Salt Lake City UT 84101</p><div id="star-rating" style="padding-left:6px;padding-top:1px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><span id="ratings" style="font-style:italic;color:#CCCCCC"> (14)</span></div></div><div class="clearfix"></div><hr><div class="col-lg-4" id="listing-image"><img src="./ziphub_files/list-image.png"></div><div class="col-md-7" id="listing-info"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a#" style="padding-left:8px;"> Chinese Restaurants</a><h3 style="padding-left:7px;">7. Canton Village</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="./ziphub_files/phone-large.png" style="width:21px;height:21px;"> +1 (801) 531-1111</span><span class="col-6-md" id="open24"></span></p><div class="clearfix"></div><p><img src="./ziphub_files/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> 368 E 100 S Salt Lake City UT 84111</p><div id="star-rating" style="padding-left:6px;padding-top:1px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><span id="ratings" style="font-style:italic;color:#CCCCCC"> (7)</span></div></div><div class="clearfix"></div><hr><div class="col-lg-4" id="listing-image"><img src="./ziphub_files/list-image.png"></div><div class="col-md-7" id="listing-info"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a#" style="padding-left:8px;"> Chinese Restaurants</a><h3 style="padding-left:7px;">8. Panda Express</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="./ziphub_files/phone-large.png" style="width:21px;height:21px;"> +1 (801) 456-0393</span><span class="col-6-md" id="open24"></span></p><div class="clearfix"></div><p><img src="./ziphub_files/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> 140 S Rio Grande St Ste Salt Lake City UT 84101</p><div id="star-rating" style="padding-left:6px;padding-top:1px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"> <span id="no-ratings" style="font-style:italic;color:#CCCCCC">no ratings</span></div></div><div class="clearfix"></div><hr><div class="col-lg-4" id="listing-image"><img src="./ziphub_files/list-image.png"></div><div class="col-md-7" id="listing-info"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a#" style="padding-left:8px;"> Chinese Restaurants</a><h3 style="padding-left:7px;">9. Hong Kong Tea House &amp; Rest</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="./ziphub_files/phone-large.png" style="width:21px;height:21px;"> +1 (801) 531-7010</span><span class="col-6-md" id="open24"></span></p><div class="clearfix"></div><p><img src="./ziphub_files/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> 565 W 200 S Salt Lake City UT 84101</p><div id="star-rating" style="padding-left:6px;padding-top:1px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-grey-large.png" style="width:17px;height:17px;"><span id="ratings" style="font-style:italic;color:#CCCCCC"> (36)</span></div></div><div class="clearfix"></div><hr><div class="col-lg-4" id="listing-image"><img src="./ziphub_files/list-image.png"></div><div class="col-md-7" id="listing-info"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a#" style="padding-left:8px;"> Vietnamese Restaurants</a><h3 style="padding-left:7px;">10. La-Cai Noodle House</h3><p><span class="col-lg-5" style="padding-left:0px;padding-right:0px;"><img src="./ziphub_files/phone-large.png" style="width:21px;height:21px;"> +1 (801) 322-3590</span><span class="col-6-md" id="open24"></span></p><div class="clearfix"></div><p><img src="./ziphub_files/location-large.png" style="height:14px;padding-left:6px;padding-right:6px"> 961 S State St Salt Lake City UT 84111</p><div id="star-rating" style="padding-left:6px;padding-top:1px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><img src="./ziphub_files/star-gold-large.png" style="width:17px;height:17px;"><span id="ratings" style="font-style:italic;color:#CCCCCC"> (21)</span></div></div><div class="clearfix"></div></div>
+                        <div class="col-md-4" id="side-pane">
+                            <div id="map" style="position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"><div class="gm-style" style="position: absolute; left: 0px; top: 0px; overflow: hidden; width: 100%; height: 100%; z-index: 0;"><div style="position: absolute; left: 0px; top: 0px; overflow: hidden; width: 100%; height: 100%; z-index: 0; cursor: url(&quot;https://maps.gstatic.com/mapfiles/openhand_8_8.cur&quot;) 8 8, default;"><div style="position: absolute; left: 0px; top: 0px; z-index: 1; width: 100%; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 0, 0);"><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 100; width: 100%;"><div style="position: absolute; left: 0px; top: 0px; z-index: 0;"><div aria-hidden="true" style="position: absolute; left: 0px; top: 0px; z-index: 1; visibility: inherit;"><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -53px; top: -39px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -53px; top: 217px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 203px; top: -39px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 203px; top: 217px;"></div></div></div></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 101; width: 100%;"></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 102; width: 100%;"></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 103; width: 100%;"><div style="position: absolute; left: 0px; top: 0px; z-index: -1;"><div aria-hidden="true" style="position: absolute; left: 0px; top: 0px; z-index: 1; visibility: inherit;"><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: -53px; top: -39px;"><canvas draggable="false" height="384" width="384" style="-webkit-user-select: none; position: absolute; left: 0px; top: 0px; height: 256px; width: 256px;"></canvas></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: -53px; top: 217px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 203px; top: -39px;"><canvas draggable="false" height="384" width="384" style="-webkit-user-select: none; position: absolute; left: 0px; top: 0px; height: 256px; width: 256px;"></canvas></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 203px; top: 217px;"></div></div></div></div><div style="position: absolute; z-index: 0; transform: translateZ(0px); left: 0px; top: 0px;"><div style="overflow: hidden; width: 300px; height: 275px;"><img src="./ziphub_files/StaticMapService.GetMapImage" style="width: 300px; height: 275px;"></div></div><div style="position: absolute; left: 0px; top: 0px; z-index: 0;"><div aria-hidden="true" style="position: absolute; left: 0px; top: 0px; z-index: 1; visibility: inherit;"><div style="transform: translateZ(0px); position: absolute; left: -53px; top: -39px; transition: opacity 200ms ease-out;"><img src="./ziphub_files/vt(1)" draggable="false" alt="" style="position: absolute; left: 0px; top: 0px; width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none;"></div><div style="transform: translateZ(0px); position: absolute; left: -53px; top: 217px; transition: opacity 200ms ease-out;"><img src="./ziphub_files/vt(2)" draggable="false" alt="" style="position: absolute; left: 0px; top: 0px; width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none;"></div><div style="transform: translateZ(0px); position: absolute; left: 203px; top: -39px; transition: opacity 200ms ease-out;"><img src="./ziphub_files/vt(3)" draggable="false" alt="" style="position: absolute; left: 0px; top: 0px; width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none;"></div><div style="transform: translateZ(0px); position: absolute; left: 203px; top: 217px; transition: opacity 200ms ease-out;"><img src="./ziphub_files/vt(4)" draggable="false" alt="" style="position: absolute; left: 0px; top: 0px; width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none;"></div></div></div></div><div style="position: absolute; left: 0px; top: 0px; z-index: 2; width: 100%; height: 100%; transition-duration: 0.3s; opacity: 0; display: none;" class="gm-style-pbc"><p class="gm-style-pbt">Use two fingers to move the map</p></div><div style="position: absolute; left: 0px; top: 0px; z-index: 3; width: 100%; height: 100%;"></div><div style="position: absolute; left: 0px; top: 0px; z-index: 4; width: 100%; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 0, 0);"><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 104; width: 100%;"></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 105; width: 100%;"></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 106; width: 100%;"></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 107; width: 100%;"></div></div></div><div style="margin-left: 5px; margin-right: 5px; z-index: 1000000; position: absolute; left: 0px; bottom: 0px;"><a target="_blank" href="https://maps.google.com/maps?ll=40.757648,-111.893878&amp;z=13&amp;t=m&amp;hl=en-US&amp;gl=US&amp;mapclient=apiv3" title="Click to see this area on Google Maps" style="position: static; overflow: visible; float: none; display: inline;"><div style="width: 66px; height: 26px; cursor: pointer;"><img src="./ziphub_files/google4_hdpi.png" draggable="false" style="position: absolute; left: 0px; top: 0px; width: 66px; height: 26px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div></a></div><div style="padding: 15px 21px; border: 1px solid rgb(171, 171, 171); font-family: Roboto, Arial, sans-serif; color: rgb(34, 34, 34); box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 16px; z-index: 10000002; display: none; width: 246px; height: 148px; position: absolute; left: 5px; top: 48px; background-color: white;"><div style="padding: 0px 0px 10px; font-size: 16px;">Map Data</div><div style="font-size: 13px;">Map data ©2016 Google</div><div style="width: 13px; height: 13px; overflow: hidden; position: absolute; opacity: 0.7; right: 12px; top: 12px; z-index: 10000; cursor: pointer;"><img src="./ziphub_files/mapcnt6.png" draggable="false" style="position: absolute; left: -2px; top: -336px; width: 59px; height: 492px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none;"></div></div><div class="gmnoprint" style="z-index: 1000001; position: absolute; right: 195px; bottom: 0px; width: 65px;"><div draggable="false" class="gm-style-cc" style="-webkit-user-select: none; height: 14px; line-height: 14px;"><div style="opacity: 0.7; width: 100%; height: 100%; position: absolute;"><div style="width: 1px;"></div><div style="width: auto; height: 100%; margin-left: 1px; background-color: rgb(245, 245, 245);"></div></div><div style="position: relative; padding-right: 6px; padding-left: 6px; font-family: Roboto, Arial, sans-serif; font-size: 10px; color: rgb(68, 68, 68); white-space: nowrap; direction: ltr; text-align: right; vertical-align: middle; display: inline-block;"><a style="color: rgb(68, 68, 68); text-decoration: none; cursor: pointer;">Map Data</a><span style="display: none;">Map data ©2016 Google</span></div></div></div><div class="gmnoscreen" style="position: absolute; right: 0px; bottom: 0px;"><div style="font-family: Roboto, Arial, sans-serif; font-size: 11px; color: rgb(68, 68, 68); direction: ltr; text-align: right; background-color: rgb(245, 245, 245);">Map data ©2016 Google</div></div><div class="gmnoprint gm-style-cc" draggable="false" style="z-index: 1000001; -webkit-user-select: none; height: 14px; line-height: 14px; position: absolute; right: 112px; bottom: 0px;"><div style="opacity: 0.7; width: 100%; height: 100%; position: absolute;"><div style="width: 1px;"></div><div style="width: auto; height: 100%; margin-left: 1px; background-color: rgb(245, 245, 245);"></div></div><div style="position: relative; padding-right: 6px; padding-left: 6px; font-family: Roboto, Arial, sans-serif; font-size: 10px; color: rgb(68, 68, 68); white-space: nowrap; direction: ltr; text-align: right; vertical-align: middle; display: inline-block;"><a href="https://www.google.com/intl/en-US_US/help/terms_maps.html" target="_blank" style="text-decoration: none; cursor: pointer; color: rgb(68, 68, 68);">Terms of Use</a></div></div><div style="width: 25px; height: 25px; overflow: hidden; display: none; margin: 10px 14px; position: absolute; top: 0px; right: 0px;"><img src="./ziphub_files/sv5.png" draggable="false" class="gm-fullscreen-control" style="position: absolute; left: -52px; top: -86px; width: 164px; height: 112px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div><div draggable="false" class="gm-style-cc" style="-webkit-user-select: none; height: 14px; line-height: 14px; position: absolute; right: 0px; bottom: 0px;"><div style="opacity: 0.7; width: 100%; height: 100%; position: absolute;"><div style="width: 1px;"></div><div style="width: auto; height: 100%; margin-left: 1px; background-color: rgb(245, 245, 245);"></div></div><div style="position: relative; padding-right: 6px; padding-left: 6px; font-family: Roboto, Arial, sans-serif; font-size: 10px; color: rgb(68, 68, 68); white-space: nowrap; direction: ltr; text-align: right; vertical-align: middle; display: inline-block;"><a target="_new" title="Report errors in the road map or imagery to Google" href="https://www.google.com/maps/@40.7576477,-111.893878,13z/data=!10m1!1e1!12b1?source=apiv3&amp;rapsrc=apiv3" style="font-family: Roboto, Arial, sans-serif; font-size: 10px; color: rgb(68, 68, 68); text-decoration: none; position: relative;">Report a map error</a></div></div><div class="gmnoprint gm-bundled-control gm-bundled-control-on-bottom" draggable="false" controlwidth="28" controlheight="93" style="margin: 10px; -webkit-user-select: none; position: absolute; bottom: 106px; right: 28px;"><div class="gmnoprint" controlwidth="28" controlheight="55" style="position: absolute; left: 0px; top: 38px;"><div draggable="false" style="-webkit-user-select: none; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; border-radius: 2px; cursor: pointer; width: 28px; height: 55px; background-color: rgb(255, 255, 255);"><div title="Zoom in" style="position: relative; width: 28px; height: 27px; left: 0px; top: 0px;"><div style="overflow: hidden; position: absolute; width: 15px; height: 15px; left: 7px; top: 6px;"><img src="./ziphub_files/tmapctrl_hdpi.png" draggable="false" style="position: absolute; left: 0px; top: 0px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none; width: 120px; height: 54px;"></div></div><div style="position: relative; overflow: hidden; width: 67%; height: 1px; left: 16%; top: 0px; background-color: rgb(230, 230, 230);"></div><div title="Zoom out" style="position: relative; width: 28px; height: 27px; left: 0px; top: 0px;"><div style="overflow: hidden; position: absolute; width: 15px; height: 15px; left: 7px; top: 6px;"><img src="./ziphub_files/tmapctrl_hdpi.png" draggable="false" style="position: absolute; left: 0px; top: -15px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none; width: 120px; height: 54px;"></div></div></div></div><div class="gm-svpc" controlwidth="28" controlheight="28" style="box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; border-radius: 2px; width: 28px; height: 28px; cursor: url(&quot;https://maps.gstatic.com/mapfiles/openhand_8_8.cur&quot;) 8 8, default; position: absolute; left: 0px; top: 0px; background-color: rgb(255, 255, 255);"><div style="position: absolute; left: 1px; top: 1px;"></div><div style="position: absolute; left: 1px; top: 1px;"><div aria-label="Street View Pegman Control" style="width: 26px; height: 26px; overflow: hidden; position: absolute; left: 0px; top: 0px;"><img src="./ziphub_files/cb_scout5_hdpi.png" draggable="false" style="position: absolute; left: -147px; top: -26px; width: 215px; height: 835px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none;"></div><div aria-label="Pegman is on top of the Map" style="width: 26px; height: 26px; overflow: hidden; position: absolute; left: 0px; top: 0px; visibility: hidden;"><img src="./ziphub_files/cb_scout5_hdpi.png" draggable="false" style="position: absolute; left: -147px; top: -52px; width: 215px; height: 835px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none;"></div><div aria-label="Street View Pegman Control" style="width: 26px; height: 26px; overflow: hidden; position: absolute; left: 0px; top: 0px; visibility: hidden;"><img src="./ziphub_files/cb_scout5_hdpi.png" draggable="false" style="position: absolute; left: -147px; top: -78px; width: 215px; height: 835px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none;"></div></div></div><div class="gmnoprint" controlwidth="28" controlheight="0" style="display: none; position: absolute;"><div title="Rotate map 90 degrees" style="width: 28px; height: 28px; overflow: hidden; position: absolute; border-radius: 2px; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; cursor: pointer; display: none; background-color: rgb(255, 255, 255);"><img src="./ziphub_files/tmapctrl4_hdpi.png" draggable="false" style="position: absolute; left: -141px; top: 6px; width: 170px; height: 54px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none;"></div><div class="gm-tilt" style="width: 28px; height: 28px; overflow: hidden; position: absolute; border-radius: 2px; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; top: 0px; cursor: pointer; background-color: rgb(255, 255, 255);"><img src="./ziphub_files/tmapctrl4_hdpi.png" draggable="false" style="position: absolute; left: -141px; top: -13px; width: 170px; height: 54px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none;"></div></div></div><div class="gmnoprint" style="margin: 10px; z-index: 0; position: absolute; cursor: pointer; left: 0px; top: 0px;"><div class="gm-style-mtc" style="float: left;"><div draggable="false" title="Show street map" style="direction: ltr; overflow: hidden; text-align: center; position: relative; color: rgb(0, 0, 0); font-family: Roboto, Arial, sans-serif; -webkit-user-select: none; font-size: 11px; padding: 8px; border-bottom-left-radius: 2px; border-top-left-radius: 2px; -webkit-background-clip: padding-box; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; min-width: 24px; font-weight: 500; background-color: rgb(255, 255, 255); background-clip: padding-box;">Map</div><div style="z-index: -1; padding: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; position: absolute; left: 0px; top: 32px; text-align: left; display: none; background-color: white;"><div draggable="false" title="Show street map with terrain" style="color: rgb(0, 0, 0); font-family: Roboto, Arial, sans-serif; -webkit-user-select: none; font-size: 11px; padding: 6px 8px 6px 6px; direction: ltr; text-align: left; white-space: nowrap; background-color: rgb(255, 255, 255);"><span role="checkbox" style="box-sizing: border-box; position: relative; line-height: 0; font-size: 0px; margin: 0px 5px 0px 0px; display: inline-block; border: 1px solid rgb(198, 198, 198); border-radius: 1px; width: 13px; height: 13px; vertical-align: middle; background-color: rgb(255, 255, 255);"><div style="position: absolute; left: 1px; top: -2px; width: 13px; height: 11px; overflow: hidden; display: none;"><img src="./ziphub_files/imgs8.png" draggable="false" style="position: absolute; left: -52px; top: -44px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none; width: 68px; height: 67px;"></div></span><label style="vertical-align: middle; cursor: pointer;">Terrain</label></div></div></div><div class="gm-style-mtc" style="float: left;"><div draggable="false" title="Show satellite imagery" style="direction: ltr; overflow: hidden; text-align: center; position: relative; color: rgb(86, 86, 86); font-family: Roboto, Arial, sans-serif; -webkit-user-select: none; font-size: 11px; padding: 8px; border-bottom-right-radius: 2px; border-top-right-radius: 2px; -webkit-background-clip: padding-box; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; border-left-width: 0px; min-width: 44px; background-color: rgb(255, 255, 255); background-clip: padding-box;">Satellite</div><div style="z-index: -1; padding: 2px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; position: absolute; right: 0px; top: 32px; text-align: left; display: none; background-color: white;"><div draggable="false" title="Show imagery with street names" style="color: rgb(0, 0, 0); font-family: Roboto, Arial, sans-serif; -webkit-user-select: none; font-size: 11px; padding: 6px 8px 6px 6px; direction: ltr; text-align: left; white-space: nowrap; background-color: rgb(255, 255, 255);"><span role="checkbox" style="box-sizing: border-box; position: relative; line-height: 0; font-size: 0px; margin: 0px 5px 0px 0px; display: inline-block; border: 1px solid rgb(198, 198, 198); border-radius: 1px; width: 13px; height: 13px; vertical-align: middle; background-color: rgb(255, 255, 255);"><div style="position: absolute; left: 1px; top: -2px; width: 13px; height: 11px; overflow: hidden;"><img src="./ziphub_files/imgs8.png" draggable="false" style="position: absolute; left: -52px; top: -44px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; max-width: none; width: 68px; height: 67px;"></div></span><label style="vertical-align: middle; cursor: pointer;">Labels</label></div></div></div></div></div></div>
+                            <div id="featured-listings">
+                                Featured Listings
+                            </div>
+                            <div id="listing-sidebar"><img src="./ziphub_files/fakefeaturedlistings.png"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="col-md-12" id="listing-footer">
+                            <div class="col-md-5" id="listing-counter">Showing 1-10 of 159 Results</div>
+                            <div class="pull-right" id="listing-pages"><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a" id="listing-button-selected"><span id="listing-buttons-selected">1</span></a><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a&amp;page=2" id="listing-button-link"><span id="listing-buttons">2</span></a><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a&amp;page=3" id="listing-button-link"><span id="listing-buttons">3</span></a><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a&amp;page=4" id="listing-button-link"><span id="listing-buttons">4</span></a><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a&amp;page=5" id="listing-button-link"><span id="listing-buttons">5</span></a><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a&amp;page=6" id="listing-button-link"><span id="listing-buttons">6</span></a><a href="http://localhost:8888/sub_pages/b2b.php?formTerm=chinese&amp;formLocation=salt+lake+city&amp;x=0&amp;y=0&amp;filter=a&amp;page=2" id="listing-button-link"><span id="listing-button-next">Next</span><img src="./ziphub_files/green-arrow-right.png" height="25px" width="25px" style="margin-bottom:2px"></a></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="container">
+                <div class="col-sm-3 col-xs-6">
+                    <div class="logo-section col-sm-2">
+                        <img src="./ziphub_files/logo.png">
+                    </div>
+                    <div class="col-sm-10">
+                        <p>ZIPHUB  | love one </p>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <h5>About</h5>
+                    <ul class="list-unstyled">
+                        <li><a>Zip Hub</a></li>
+                        <li><a>Privacy Policy</a></li>
+                        <li><a>Investor Relations</a></li>
+                        <li><a>Mission Statement</a></li>
+                        <li><a>The Team</a></li>
+                        <li><a>Zip hub charities</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <h5>Join Zib Hub</h5>
+                    <ul class="list-unstyled">
+                        <li><a>Join as Merchant</a></li>
+                        <li><a>Join as Consumer</a></li>
+                        <li><a>Join as Non-Profit organization</a></li>
+                        <li><a>Advertise With us</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3 col-xs-6">
+                    <h5>Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><a>Contact us</a></li>
+                        <li><a>Carrer opportunities</a></li>
+                        <li><a>Become a sponsor</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <div class="bottom-form">
+            <div class="container">
+                <p>Home. Stores . My Account . FAQs.  Terms and Conditions</p>
+            </div>
+
+        </div>
+    
+
+</body></html>
