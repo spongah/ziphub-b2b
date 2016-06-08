@@ -14,9 +14,16 @@ and open the template in the editor.
         <link rel="stylesheet" href="css/b2b.css"/>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script>
-            var searchResult, options;
+            var searchResult, filteredResults, options;
+            var allResults = {};
 
-            function getSearchResults(callback, options){
+            Array.prototype.remove = function(from, to) {
+              var rest = this.slice((to || from) + 1 || this.length);
+              this.length = from < 0 ? this.length + from : from;
+              return this.push.apply(this, rest);
+            };
+
+            function getSearchResults(callback, options) {
 
                 // Set variables to isolate search options
                 var searchTerm = options.term || "Real Estate";
@@ -40,8 +47,68 @@ and open the template in the editor.
                     // Send listing HTML to callback
                     callback(json.searchResult, options); 
                 }); 
-            };
-            
+            }
+
+            function getFilteredResults(callback, options) {
+
+                console.log("getting filtered results");
+                // Set variables to isolate search options
+                var searchTerm = options.term || "Real Estate";
+                var searchLocation = options.location || "Las Vegas";
+                var pageNum = 1;
+                var searchSort = "distance";
+                var searchRadius = options.radius || 20;
+                var searchListingCount = 50;
+                var apiKey = options.apiKey || "mssp53w72h";
+                var filterLetter = options.filter || "";
+
+                // Set options hash based on input and/or defaults
+                options = {term: searchTerm, location: searchLocation, page: pageNum, sort: searchSort, radius: searchRadius, count: searchListingCount, apiKey: apiKey, filter: filterLetter};
+
+                // Get JSON object array and assign to json variable
+                var queryString = "//pubapi.yp.com/search-api/search/devapi/search?term=" + searchTerm + "&searchloc=" + searchLocation + "&format=json&pagenum=" + pageNum + "&sort=" + searchSort + "&radius=" + searchRadius + "&listingcount=" + searchListingCount + "&key=" + apiKey + "&callback=?"
+                $.getJSON(queryString, function(json) {
+            //    $.getJSON("js/vegasrealestate.json", function(json) {
+                    (function(json) {
+                        console.log("query1");
+                        allResults = json.searchResult;
+                        for(var i=1; i<(Math.ceil(json.searchResult.metaProperties.totalAvailable / 50));i++) {
+                            (function(i) {
+                                console.log("getting: " + i);
+                                queryString2 = "//pubapi.yp.com/search-api/search/devapi/search?term=" + searchTerm + "&searchloc=" + searchLocation + "&format=json&pagenum=" + i + "&sort=" + searchSort + "&radius=" + searchRadius + "&listingcount=" + searchListingCount + "&key=" + apiKey + "&callback=?"
+                                $.getJSON(queryString2, function(json2) {
+                        //        $.getJSON("js/vegasrealestate.json", function(json2) {
+                                    addResults(json2);
+                                });  
+                            })(i);
+                        }
+                    })(json);
+                    var numberOfListings = allResults.searchListings.searchListing.length;
+                    for(y=0; y<numberOfListings; y++) {
+                        (function(y) {
+                            var deleted = true;
+                            while (deleted == true) {
+                                deleted = false;
+                                if (allResults.searchListings.searchListing[y] != undefined) {
+                                    console.log(allResults.searchListings.searchListing[y].businessName.substring(0,1) + " matching to " + filterLetter);
+                                    if (allResults.searchListings.searchListing[y].businessName.substring(0,1) != filterLetter) {
+                                        allResults.searchListings.searchListing.splice(y, 1);
+                                        console.log("erasing number " + y);
+                                        deleted = true;
+                                    }
+                                }
+                            }
+                        })(y);
+                    }
+                    callback(allResults, options);
+                    //callback(allResults, options);
+                }); 
+            }
+
+            function addResults(json) {
+                allResults.searchListings.searchListing = allResults.searchListings.searchListing.concat(json.searchResult.searchListings.searchListing);  
+            }            
+
             function mainListings() {
 
                 // Create an empty array to store listings
@@ -220,14 +287,12 @@ and open the template in the editor.
             function searchFilter() {
                 allLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 letterArray = allLetters.split('');
-                console.log(letterArray);
                 searchFilterHTML = [];
                 var thisURL = document.location.toString();
                 var thisURLnoFilter = thisURL.split("&filter=")[0].replace("&filter=", "");
                 var paramChar = "";
                 if (document.location.search == "") { paramChar = "?" } else { paramChar = "&" };
-                searchFilterHTML.push('<span id="filter-label"><img src="img/green-search.png" height="15px" width="15px" style="margin-bottom:2px; margin-right:5px">Filter:</span>');
-                console.log(options.filter);    
+                searchFilterHTML.push('<span id="filter-label"><img src="img/green-search.png" height="15px" width="15px" style="margin-bottom:2px; margin-right:5px">Filter:</span>');  
                 for (x=0; x<letterArray.length; x++) {
                     if (letterArray[x] == options.filter) { searchFilterHTML.push('<a href="' + thisURLnoFilter + paramChar + 'filter=' + letterArray[x] + '" id="filter-button-selected"><span id="filter-buttons-selected">' + letterArray[x] + '</span></a>'); } else {
                     searchFilterHTML.push('<a href="' + thisURLnoFilter + paramChar + 'filter=' + letterArray[x] + '" id="filter-button-link"><span id="filter-buttons">' + letterArray[x] + '</span></a>'); }
@@ -235,13 +300,13 @@ and open the template in the editor.
                 $('#search-filter').html(searchFilterHTML.join(''));
             }
 
-            function processResults(searchResults, optionsHash) {
-                searchResult = searchResults;
+            function processResults(searchResultsIn, optionsHash) {
+                searchResult = searchResultsIn;
                 options = optionsHash;
-                console.log("searchResult Object:");
-                console.log(searchResult);
-                console.log("Options Hash:");
-                console.log(options);
+  //              console.log("searchResult Object:");
+ //               console.log(searchResult);
+//                console.log("Options Hash:");
+//                console.log(options);
                 showSearch();
                 mainListings();
                 bottomCounter();
@@ -293,9 +358,12 @@ and open the template in the editor.
                     if (parameters.page != "") { pageNum = Number(parameters.page) }
                     if (parameters.listingcount != "") { listingCount = Math.min(Number(parameters.listingcount), 50); }
                     if (parameters.filter != undefined) { filterLetter = parameters.filter.substring(0, 1).toUpperCase(); }
+
                 }
-                // Send request to YP.com API and when the results are received, send to processResults function
-                getSearchResults(processResults, options = {term: formTerm, location: formLocation, page: pageNum, listingCount: listingCount, filter: filterLetter});
+                if (filterLetter != "") { getFilteredResults(processResults, options = {term: formTerm, location: formLocation, page: pageNum, listingCount: listingCount, filter: filterLetter}); } else {
+                    // Send request to YP.com API and when the results are received, send to processResults function
+                    getSearchResults(processResults, options = {term: formTerm, location: formLocation, page: pageNum, listingCount: listingCount, filter: filterLetter});
+                }
             });
 
         </script>
@@ -360,7 +428,7 @@ and open the template in the editor.
                 <div id="featured-businesses">
                     <h1 class="text-center">Featured Businesses</h1>
                     <p class="text-center"> <img src="img/border.png"/></p>
-                    <img src="img/fakefeaturedbusinesses.png">
+               <!--     <img src="img/fakefeaturedbusinesses.png">  -->
                     <hr>
                 </div>
                 <div class="container">
@@ -375,7 +443,7 @@ and open the template in the editor.
                             <div id="featured-listings">
                                 Featured Listings
                             </div>
-                            <div id="listing-sidebar"><img src="img/fakefeaturedlistings.png"></div>
+                            <div id="listing-sidebar">  <!-- <img src="img/fakefeaturedlistings.png">--></div> 
                         </div>
                         <div class="clearfix"></div>
                         <div class="col-md-12" id="listing-footer">
