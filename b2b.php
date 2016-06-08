@@ -40,8 +40,6 @@ and open the template in the editor.
 
                 // Get JSON object array and assign to json variable
                 var queryString = "//pubapi.yp.com/search-api/search/devapi/search?term=" + searchTerm + "%2C&searchloc=" + searchLocation + "&format=json&pagenum=" + pageNum + "&sort=" + searchSort + "&radius=" + searchRadius + "&listingcount=" + searchListingCount + "&key=" + apiKey + "&callback=?"
-                console.log("Query String:");
-                console.log(queryString);
                 $.getJSON(queryString, function(json) {
 
                     // Send listing HTML to callback
@@ -50,8 +48,6 @@ and open the template in the editor.
             }
 
             function getFilteredResults(callback, options) {
-
-                console.log("getting filtered results");
                 // Set variables to isolate search options
                 var searchTerm = options.term || "Real Estate";
                 var searchLocation = options.location || "Las Vegas";
@@ -70,11 +66,9 @@ and open the template in the editor.
                 $.getJSON(queryString, function(json) {
             //    $.getJSON("js/vegasrealestate.json", function(json) {
                     (function(json) {
-                        console.log("query1");
                         allResults = json.searchResult;
                         for(var i=1; i<(Math.ceil(json.searchResult.metaProperties.totalAvailable / 50));i++) {
                             (function(i) {
-                                console.log("getting: " + i);
                                 queryString2 = "//pubapi.yp.com/search-api/search/devapi/search?term=" + searchTerm + "&searchloc=" + searchLocation + "&format=json&pagenum=" + i + "&sort=" + searchSort + "&radius=" + searchRadius + "&listingcount=" + searchListingCount + "&key=" + apiKey + "&callback=?"
                                 $.getJSON(queryString2, function(json2) {
                         //        $.getJSON("js/vegasrealestate.json", function(json2) {
@@ -90,10 +84,8 @@ and open the template in the editor.
                             while (deleted == true) {
                                 deleted = false;
                                 if (allResults.searchListings.searchListing[y] != undefined) {
-                                    console.log(allResults.searchListings.searchListing[y].businessName.substring(0,1) + " matching to " + filterLetter);
                                     if (allResults.searchListings.searchListing[y].businessName.substring(0,1) != filterLetter) {
                                         allResults.searchListings.searchListing.splice(y, 1);
-                                        console.log("erasing number " + y);
                                         deleted = true;
                                     }
                                 }
@@ -303,10 +295,6 @@ and open the template in the editor.
             function processResults(searchResultsIn, optionsHash) {
                 searchResult = searchResultsIn;
                 options = optionsHash;
-  //              console.log("searchResult Object:");
- //               console.log(searchResult);
-//                console.log("Options Hash:");
-//                console.log(options);
                 showSearch();
                 mainListings();
                 bottomCounter();
